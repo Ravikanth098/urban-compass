@@ -5,12 +5,9 @@ import API from "../../api/api";
 function ManageCities() {
   const [cities, setCities] = useState([]);
   const [name, setName] = useState("");
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState("");
+  const [image, setImage] = useState(""); // ✅ URL string
 
   const navigate = useNavigate();
-
-  const BASE_URL = process.env.REACT_APP_API_URL;
 
   // ✅ AUTH CHECK
   useEffect(() => {
@@ -40,61 +37,37 @@ function ManageCities() {
     navigate("/admin");
   };
 
-  // ✅ IMAGE HANDLE
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Only image allowed");
-      return;
-    }
-
-    setImage(file);
-    setPreview(URL.createObjectURL(file));
-  };
-
-  // ✅ ADD CITY
+  // ✅ ADD CITY (UPDATED)
   const addCity = async () => {
-    if (!name.trim()) {
-      alert("Enter city name");
-      return;
-    }
-
-    if (!image) {
-      alert("Select image");
+    if (!name.trim() || !image.trim()) {
+      alert("Enter name and image URL");
       return;
     }
 
     try {
-      const formData = new FormData();
-      formData.append("name", name.trim());
-      formData.append("image", image);
+      const newCity = {
+        name: name.trim(),
+        image: image.trim(),
+      };
 
-      await API.post("/cities", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await API.post("/cities", newCity);
 
       setName("");
-      setImage(null);
-      setPreview("");
+      setImage("");
 
       fetchCities();
     } catch (error) {
-      console.log("Upload error:", error);
-      alert("Upload failed");
+      console.log("Add error:", error);
+      alert("Failed to add city");
     }
   };
 
-  // ✅ DELETE
+  // ✅ DELETE (FIXED)
   const deleteCity = async (id) => {
     if (!window.confirm("Are you sure?")) return;
 
     try {
-      await API.delete(`/cities/${id}`);
+      await API.delete(`/cities/${id}`); // ✅ FIXED
       setCities((prev) => prev.filter((city) => city.id !== id));
     } catch (error) {
       console.log("Delete error:", error);
@@ -128,12 +101,19 @@ function ManageCities() {
 
         <br /><br />
 
-        <input type="file" onChange={handleImageChange} />
+        {/* ✅ IMAGE URL INPUT */}
+        <input
+          type="text"
+          placeholder="Enter Image URL"
+          value={image}
+          onChange={(e) => setImage(e.target.value)}
+        />
 
         <br /><br />
 
-        {preview && (
-          <img src={preview} alt="preview" width="200" />
+        {/* ✅ PREVIEW */}
+        {image && (
+          <img src={image} alt="preview" width="200" />
         )}
 
         <br /><br />
@@ -160,11 +140,11 @@ function ManageCities() {
             >
               <h4>{city.name}</h4>
 
-              {/* ✅ FIXED IMAGE URL */}
+              {/* ✅ DIRECT IMAGE URL */}
               <img
                 src={
                   city.image
-                    ? `${BASE_URL}/uploads/${city.image}`
+                    ? city.image
                     : "https://via.placeholder.com/200"
                 }
                 alt={city.name}

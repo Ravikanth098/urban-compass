@@ -5,14 +5,14 @@ import API from "../api/api";
 import "../styles/cities.css";
 import BackButton from "../components/BackButton";
 
-//  Import library
-import { formatCityName, getCityImage } from "../utils/cityLibrary";
+// Optional (you can keep or remove)
+import { formatCityName } from "../utils/cityLibrary";
 
 function Cities() {
-
   const navigate = useNavigate();
   const [cities, setCities] = useState([]);
 
+  // Fetch cities on load
   useEffect(() => {
     fetchCities();
   }, []);
@@ -20,10 +20,9 @@ function Cities() {
   const fetchCities = async () => {
     try {
       const res = await API.get("/cities");
-      console.log(res.data);
-      setCities(res.data);
+      setCities(res.data || []);
     } catch (error) {
-      console.log(error);
+      console.log("Fetch error:", error);
     }
   };
 
@@ -32,7 +31,7 @@ function Cities() {
       <BackButton />
 
       <div className="cities-page">
-
+        {/* Back Button */}
         <button className="back-btn" onClick={() => navigate("/")}>
           ← Return Back
         </button>
@@ -42,31 +41,36 @@ function Cities() {
         </h2>
 
         <div className="city-grid">
+          {cities.length === 0 ? (
+            <p>No cities found</p>
+          ) : (
+            cities.map((city) => (
+              <motion.div
+                key={city.id}
+                whileHover={{ scale: 1.05 }}
+                className="city-card"
+                onClick={() => navigate(`/dashboard/${city.name}`)}
+              >
+                {/* ✅ FIXED IMAGE */}
+                <img
+                  src={
+                    city.image
+                      ? city.image
+                      : "https://via.placeholder.com/300"
+                  }
+                  alt={city.name}
+                />
 
-          {cities.map((city) => (
-
-            <motion.div
-              key={city.id}
-              whileHover={{ scale: 1.05 }}
-              className="city-card"
-              onClick={() => navigate(`/dashboard/${city.name}`)}
-            >
-
-              <img
-                src={getCityImage(city.image)}  
-                alt={city.name}
-              />
-
-              <div className="overlay">
-                {formatCityName(city.name)}   {/* library used */}
-              </div>
-
-            </motion.div>
-
-          ))}
-
+                {/* Overlay */}
+                <div className="overlay">
+                  {formatCityName
+                    ? formatCityName(city.name)
+                    : city.name}
+                </div>
+              </motion.div>
+            ))
+          )}
         </div>
-
       </div>
     </>
   );

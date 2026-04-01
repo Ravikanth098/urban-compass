@@ -1,0 +1,41 @@
+{
+  "files": {
+    "main.css": "/static/css/main.2aa77e5e.css",
+    "main.js": "/static/js/main.c20a770c.js",
+    "static/js/453.825386d9.chunk.js": "/static/js/453.825386d9.chunk.js",
+    "static/media/city.jpg": "/static/media/city.7f9ccd2d809328ea4533.jpg",
+    "static/media/dublin.jpg": "/static/media/dublin.a062f36c341a4e614f57.jpg",
+    "static/media/st.jpg": "/static/media/st.abe55f6b40ce17714114.jpg",
+    "static/media/Trinity.jpg": "/static/media/Trinity.bb5b7c06ab624e514dc3.jpg",
+    "static/media/do.jpg": "/static/media/do.8c1935f965a1667acb62.jpg",
+    "static/media/car.jpg": "/static/media/car.bcb4d7f8b62a83a479d4.jpg",
+    "static/media/hotelbook.png": "/static/media/hotelbook.34740a5176c184de1d16.png",
+    "static/media/stephens.jpg": "/static/media/stephens.b08b1e2566a9bcafccac.jpg",
+    "static/media/ManorMills.jpg": "/static/media/ManorMills.a4240e3022a41a35ab3f.jpg",
+    "static/media/Maynoo.jpg": "/static/media/Maynoo.7aa579a472a3f424edc4.jpg",
+    "static/media/castle.jpg": "/static/media/castle.ba57b433ad4c2f2d82d7.jpg",
+    "static/media/jervis.jpg": "/static/media/jervis.3659515be122c9ab805e.jpg",
+    "static/media/Temple.jpg": "/static/media/Temple.c888963aede0c3567a35.jpg",
+    "static/media/caption.jpg": "/static/media/caption.ca339d8dfaf215b6a87d.jpg",
+    "static/media/tourist.jpg": "/static/media/tourist.10a35ac11ae5ef7e2fa6.jpg",
+    "static/media/hotelicon.png": "/static/media/hotelicon.4a2895561c730d38eed1.png",
+    "static/media/Carton.jpg": "/static/media/Carton.27f7b0ba974bbd5a05a2.jpg",
+    "static/media/ireland.avif": "/static/media/ireland.b8d9dd55d4a4ffe78288.avif",
+    "static/media/shoppingmalls.jpg": "/static/media/shoppingmalls.b898ff663c74731dc74d.jpg",
+    "static/media/liffey.jpg": "/static/media/liffey.c76ca3d624822ec7460c.jpg",
+    "static/media/patrik.jpg": "/static/media/patrik.2156c64f732b043b3e99.jpg",
+    "static/media/hospital.avif": "/static/media/hospital.0fc7c24048233d264dcc.avif",
+    "static/media/res.jpg": "/static/media/res.3b95439a58df7fcabe99.jpg",
+    "static/media/sun.jpg": "/static/media/sun.d5515667e6371105cc3c.jpg",
+    "static/media/west.jpg": "/static/media/west.8384c6e2af74ca61fb22.jpg",
+    "static/media/Guiness.jpg": "/static/media/Guiness.22e5b30e3ecde18d203e.jpg",
+    "index.html": "/index.html",
+    "main.2aa77e5e.css.map": "/static/css/main.2aa77e5e.css.map",
+    "main.c20a770c.js.map": "/static/js/main.c20a770c.js.map",
+    "453.825386d9.chunk.js.map": "/static/js/453.825386d9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2aa77e5e.css",
+    "static/js/main.c20a770c.js"
+  ]
+}
