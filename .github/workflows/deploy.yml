@@ -42,7 +42,7 @@ jobs:
 
       # ✅ 6. Simple ZIP (IMPORTANT)
       - name: Zip
-        run: zip -r app.zip backend Procfile
+        run: zip -r app.zip backend
 
       # 7. Deploy to AWS Elastic Beanstalk
       - name: Deploy
