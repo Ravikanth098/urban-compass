@@ -10,53 +10,55 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout code
+    # 1️⃣ Checkout code
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # 2. Setup Node
+    # 2️⃣ Setup Node
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 18
 
-    # 3. Install backend dependencies
+    # 3️⃣ Install backend dependencies (FIX for errors)
     - name: Install backend
       run: |
         cd backend
         npm install --legacy-peer-deps
 
-    # 4. Install frontend dependencies
+    # 4️⃣ Install frontend dependencies
     - name: Install frontend
       run: |
         cd frontend
         npm install --legacy-peer-deps
 
-    # 5. Build frontend (IMPORTANT FIX)
+    # 5️⃣ Build frontend (FIX CI error)
     - name: Build frontend
       run: |
         cd frontend
         CI=false npm run build
 
-    # 6. Copy build to backend
+    # 6️⃣ Copy frontend build to backend
     - name: Copy build
       run: |
         rm -rf backend/frontend
         mkdir backend/frontend
         cp -r frontend/build/* backend/frontend/
 
-    # 7. Zip application
-    - name: Zip app
-      run: zip -r app.zip backend
+    # 7️⃣ Prepare correct AWS structure (IMPORTANT FIX)
+    - name: Prepare deployment
+      run: |
+        cd backend
+        zip -r ../app.zip .
 
-    # 8. Deploy to AWS Elastic Beanstalk
+    # 8️⃣ Deploy to AWS Elastic Beanstalk
     - name: Deploy to AWS
       uses: einaregilsson/beanstalk-deploy@v21
       with:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: myapp              # 🔥 change if needed
-        environment_name: Myapp-env         # 🔥 EXACT from AWS
+        application_name: myapp            # 🔥 your app name
+        environment_name: Myapp-env       # 🔥 your env name
         region: ap-south-1
         version_label: v-${{ github.run_number }}
         deployment_package: app.zip
