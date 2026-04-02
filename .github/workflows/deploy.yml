@@ -43,7 +43,7 @@ jobs:
 
       # Zip
       - name: Zip
-        run: zip -r app.zip backend
+        run: zip -r app.zip 
 
       # Deploy
       - name: Deploy to Elastic Beanstalk
