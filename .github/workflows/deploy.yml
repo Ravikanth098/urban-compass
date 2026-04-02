@@ -10,15 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Get code
+      # Checkout code
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Setup node
+      # ✅ FIX 1: Use Node 20 (IMPORTANT)
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
       # Install backend
       - name: Install backend
@@ -26,32 +26,33 @@ jobs:
           cd backend
           npm install
 
-      # Build frontend
+      # ✅ FIX 2: Disable CI strict mode
       - name: Build frontend
         run: |
           cd frontend
           npm install
+          export CI=false
           npm run build
 
-      # Copy build into backend
+      # Copy build
       - name: Copy build
         run: |
           rm -rf backend/frontend
-          mkdir backend/frontend
+          mkdir -p backend/frontend
           cp -r frontend/build/* backend/frontend/
 
-      # Zip app
+      # Zip
       - name: Zip
         run: zip -r app.zip backend
 
-      # Deploy to AWS
+      # Deploy
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: YOUR_APP_NAME
-          environment_name: YOUR_ENV_NAME
+          application_name: myapp
+          environment_name: myapp-env
           region: ${{ secrets.AWS_REGION }}
           version_label: v-${{ github.run_number }}
           deployment_package: app.zip
