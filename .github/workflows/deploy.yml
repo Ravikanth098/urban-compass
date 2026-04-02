@@ -1,4 +1,4 @@
-name: Full CI/CD Pipeline
+name: Simple CI/CD Pipeline
 
 on:
   push:
@@ -10,48 +10,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
+      # 1. Checkout code
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Setup Node (required for react-router)
+      # 2. Setup Node
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      # Install backend
+      # 3. Install backend
       - name: Install backend
         run: |
           cd backend
           npm install
 
-      # Build frontend
+      # 4. Build frontend
       - name: Build frontend
         run: |
           cd frontend
           npm install
           CI=false npm run build
 
-      # Copy frontend build into backend
+      # 5. Copy frontend build to backend
       - name: Copy build
         run: |
           rm -rf backend/frontend
           mkdir -p backend/frontend
           cp -r frontend/build/* backend/frontend/
 
-      # ✅ FIXED ZIP (VERY IMPORTANT)
+      # ✅ 6. Simple ZIP (IMPORTANT)
       - name: Zip
-        run: |
-          zip -r app.zip . \
-            -x ".git/*" \
-               ".github/*" \
-               "node_modules/*" \
-               "frontend/node_modules/*" \
-               "backend/node_modules/*"
+        run: zip -r app.zip backend Procfile
 
-      # Deploy to AWS Elastic Beanstalk
-      - name: Deploy to Elastic Beanstalk
+      # 7. Deploy to AWS Elastic Beanstalk
+      - name: Deploy
         uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
