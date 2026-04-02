@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Build and Deploy
 
 on:
   push:
@@ -10,48 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Install frontend
-      run: |
-        cd frontend
-        npm install
+      - name: Install frontend
+        run: |
+          cd frontend
+          npm install --legacy-peer-deps
 
-    - name: Build frontend
-      run: |
-        cd frontend
-        CI=false npm run build
+      - name: Build frontend
+        run: |
+          cd frontend
+          CI=false npm run build
 
-    - name: Copy frontend build to backend
-      run: |
-        rm -rf backend/frontend
-        mkdir backend/frontend
-        cp -r frontend/build/* backend/frontend/
+      - name: Copy frontend to backend
+        run: |
+          rm -rf backend/frontend
+          mkdir backend/frontend
+          cp -r frontend/build backend/frontend/
 
-    - name: Prepare deployment folder
-      run: |
-        rm -rf deploy
-        mkdir deploy
-        cp -r backend/* deploy/
+      - name: Zip app
+        run: zip -r app.zip backend
 
-    - name: Zip application
-      run: |
-        cd deploy
-        zip -r ../app.zip .
-
-    - name: Deploy to AWS
-      uses: einaregilsson/beanstalk-deploy@v22
-      with:
-        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: myapp
-        environment_name: Myapp-env
-        region: ap-south-1
-        version_label: v-${{ github.run_number }}
-        deployment_package: app.zip
+      - name: Deploy to AWS
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: myapp
+          environment_name: myapp-env
+          region: ap-south-1
+          version_label: v-${{ github.run_number }}
+          deployment_package: app.zip
