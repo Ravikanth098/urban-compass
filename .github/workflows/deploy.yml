@@ -18,6 +18,9 @@ jobs:
         with:
           node-version: 18
 
+      # ======================
+      # FRONTEND BUILD
+      # ======================
       - name: Install frontend
         run: |
           cd frontend
@@ -28,15 +31,34 @@ jobs:
           cd frontend
           CI=false npm run build
 
-      - name: Copy frontend to backend
+      # ======================
+      # MOVE BUILD TO BACKEND
+      # ======================
+      - name: Copy frontend build to backend
         run: |
           rm -rf backend/frontend
           mkdir backend/frontend
           cp -r frontend/build backend/frontend/
 
-      - name: Zip app
-        run: zip -r app.zip backend
+      # ======================
+      # FIX BACKEND INSTALL
+      # ======================
+      - name: Install backend
+        run: |
+          cd backend
+          npm install --omit=dev
 
+      # ======================
+      # ZIP FIX (IMPORTANT)
+      # ======================
+      - name: Zip app (FIXED STRUCTURE)
+        run: |
+          cd backend
+          zip -r ../app.zip .
+
+      # ======================
+      # DEPLOY TO AWS
+      # ======================
       - name: Deploy to AWS
         uses: einaregilsson/beanstalk-deploy@v21
         with:
