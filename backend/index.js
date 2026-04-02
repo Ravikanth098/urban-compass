@@ -84,7 +84,7 @@ app.post("/admin/login", (req, res) => {
 app.use(express.static(path.join(__dirname, "frontend")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend/index.html"));
+  res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
 
 app.use((err, req, res, next) => {
