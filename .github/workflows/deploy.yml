@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # ✅ FIX 1: Use Node 20 (IMPORTANT)
+      # Setup Node (required for react-router)
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -26,26 +26,31 @@ jobs:
           cd backend
           npm install
 
-      # ✅ FIX 2: Disable CI strict mode
+      # Build frontend
       - name: Build frontend
         run: |
           cd frontend
           npm install
-          export CI=false
-          npm run build
+          CI=false npm run build
 
-      # Copy build
+      # Copy frontend build into backend
       - name: Copy build
         run: |
           rm -rf backend/frontend
           mkdir -p backend/frontend
           cp -r frontend/build/* backend/frontend/
 
-      # Zip
+      # ✅ FIXED ZIP (VERY IMPORTANT)
       - name: Zip
-        run:  zip -r app.zip . -x "*.git*" "node_modules/*"
+        run: |
+          zip -r app.zip . \
+            -x ".git/*" \
+               ".github/*" \
+               "node_modules/*" \
+               "frontend/node_modules/*" \
+               "backend/node_modules/*"
 
-      # Deploy
+      # Deploy to AWS Elastic Beanstalk
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
