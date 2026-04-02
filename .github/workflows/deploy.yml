@@ -43,7 +43,7 @@ jobs:
 
       # Zip
       - name: Zip
-        run: zip -r app.zip 
+        run:  zip -r app.zip . -x "*.git*" "node_modules/*"
 
       # Deploy
       - name: Deploy to Elastic Beanstalk
