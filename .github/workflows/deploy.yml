@@ -1,4 +1,4 @@
-name: Simple CI/CD
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,48 +6,57 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      # ✅ 1. Checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      # ✅ 2. Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 18
 
+      # ✅ 3. Install backend (FIXED)
       - name: Install backend
         run: |
           cd backend
-          npm install
+          npm install --legacy-peer-deps
 
+      # ✅ 4. Install frontend (FIXED)
+      - name: Install frontend
+        run: |
+          cd frontend
+          npm install --legacy-peer-deps
+
+      # ✅ 5. Build frontend
       - name: Build frontend
         run: |
           cd frontend
-          npm install
-          CI=false npm run build
+          npm run build
 
+      # ✅ 6. Copy build to backend
       - name: Copy build
         run: |
           rm -rf backend/frontend
-          mkdir -p backend/frontend
+          mkdir backend/frontend
           cp -r frontend/build/* backend/frontend/
 
-      # ✅ FINAL FIX
-      - name: Zip backend only
-        run: |
-          cd backend
-          zip -r ../app.zip .
+      # ✅ 7. Zip application
+      - name: Zip app
+        run: zip -r app.zip backend
 
-      - name: Deploy
+      # ✅ 8. Deploy to AWS Elastic Beanstalk
+      - name: Deploy to AWS
         uses: einaregilsson/beanstalk-deploy@v21
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
           application_name: myapp
-          environment_name: myapp-env
-          region: ${{ secrets.AWS_REGION }}
+          environment_name: Myapp-env
+          region: ap-south-1
           version_label: v-${{ github.run_number }}
           deployment_package: app.zip
