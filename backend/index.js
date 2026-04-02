@@ -8,15 +8,19 @@ const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
+// Middleware
 app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
 
+// Routes
 app.use("/users", authRoutes);
 
+// Test route
 app.get("/users/test", (req, res) => {
   res.send("Users route working");
 });
 
+// Get cities
 app.get("/cities", (req, res) => {
   db.query("SELECT * FROM cities", (err, result) => {
     if (err) return res.status(500).json({ error: "Database error" });
@@ -24,6 +28,7 @@ app.get("/cities", (req, res) => {
   });
 });
 
+// Add city
 app.post("/cities", (req, res) => {
   const { name, image } = req.body;
 
@@ -41,6 +46,7 @@ app.post("/cities", (req, res) => {
   );
 });
 
+// Delete city
 app.delete("/cities/:id", (req, res) => {
   db.query("DELETE FROM cities WHERE id = ?", [req.params.id], (err) => {
     if (err) return res.status(500).json({ error: "Delete failed" });
@@ -48,6 +54,7 @@ app.delete("/cities/:id", (req, res) => {
   });
 });
 
+// Admin login
 app.post("/admin/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -58,12 +65,21 @@ app.post("/admin/login", (req, res) => {
   res.status(401).json({ success: false, message: "Invalid credentials" });
 });
 
-app.use(express.static(path.join(__dirname, "frontend")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend", "index.html"));
+// ==========================
+// ✅ FRONTEND FIX (IMPORTANT)
+// ==========================
+
+// Serve React build files
+app.use(express.static(path.join(__dirname, "frontend/build")));
+
+// Catch-all route (FIXED)
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/build", "index.html"));
 });
 
+
+// Start server
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, "0.0.0.0", () => {
