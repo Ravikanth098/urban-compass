@@ -42,7 +42,7 @@ app.get("/users/test", (req, res) => {
 app.get("/cities", (req, res) => {
   db.query("SELECT * FROM cities", (err, result) => {
     if (err) {
-      console.error("❌ Fetch Error:", err);
+      console.error("Fetch Error:", err);
       return res.status(500).json({ error: "Database error" });
     }
     res.json(result);
@@ -50,7 +50,7 @@ app.get("/cities", (req, res) => {
 });
 
 // ======================
-// ✅ ADD CITY (UPDATED - NO MULTER)
+// ✅ ADD CITY
 // ======================
 app.post("/cities", (req, res) => {
   const { name, image } = req.body;
@@ -63,7 +63,7 @@ app.post("/cities", (req, res) => {
 
   db.query(sql, [name, image], (err) => {
     if (err) {
-      console.error("❌ Insert Error:", err);
+      console.error("Insert Error:", err);
       return res.status(500).json({ error: "Insert failed" });
     }
 
@@ -79,7 +79,7 @@ app.delete("/cities/:id", (req, res) => {
 
   db.query("DELETE FROM cities WHERE id = ?", [id], (err) => {
     if (err) {
-      console.error("❌ Delete Error:", err);
+      console.error("Delete Error:", err);
       return res.status(500).json({ error: "Delete failed" });
     }
 
@@ -109,7 +109,6 @@ app.post("/admin/login", (req, res) => {
 // ======================
 // ✅ SERVE REACT FRONTEND
 // ======================
-
 app.use(express.static(path.join(__dirname, "frontend/build")));
 
 app.use((req, res) => {
@@ -120,7 +119,7 @@ app.use((req, res) => {
 // ✅ ERROR HANDLER
 // ======================
 app.use((err, req, res, next) => {
-  console.error("❌ Server Error:", err.message);
+  console.error("Server Error:", err.message);
   res.status(500).json({ error: err.message });
 });
 
@@ -130,5 +129,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
