@@ -1,4 +1,4 @@
-name: Simple CI/CD Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -20,11 +20,9 @@ jobs:
         with:
           node-version: 20
 
-      # 3. Install backend
-      - name: Install backend
-        run: |
-          cd backend
-          npm install
+      # 3. Install root dependencies
+      - name: Install dependencies
+        run: npm install
 
       # 4. Build frontend
       - name: Build frontend
@@ -33,16 +31,20 @@ jobs:
           npm install
           CI=false npm run build
 
-      # 5. Copy frontend build to backend
+      # 5. Copy frontend build into backend
       - name: Copy build
         run: |
           rm -rf backend/frontend
           mkdir -p backend/frontend
           cp -r frontend/build/* backend/frontend/
 
-      # ✅ 6. Simple ZIP (IMPORTANT)
+      # 6. Zip project (IMPORTANT FIX)
       - name: Zip
-        run: zip -r app.zip . -x "node_modules/*" ".git/*"
+        run: |
+          zip -r app.zip . \
+          -x "node_modules/*" \
+          -x ".git/*" \
+          -x ".github/*"
 
       # 7. Deploy to AWS Elastic Beanstalk
       - name: Deploy
