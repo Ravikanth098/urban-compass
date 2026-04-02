@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Full CI/CD Pipeline
 
 on:
   push:
@@ -6,31 +6,52 @@ on:
       - main
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      # Get code
+      - name: Checkout
         uses: actions/checkout@v3
 
+      # Setup node
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
+      # Install backend
       - name: Install backend
         run: |
           cd backend
           npm install
 
+      # Build frontend
       - name: Build frontend
         run: |
           cd frontend
           npm install
           npm run build
 
-      - name: Copy build to backend
+      # Copy build into backend
+      - name: Copy build
         run: |
           rm -rf backend/frontend
           mkdir backend/frontend
           cp -r frontend/build/* backend/frontend/
+
+      # Zip app
+      - name: Zip
+        run: zip -r app.zip backend
+
+      # Deploy to AWS
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: YOUR_APP_NAME
+          environment_name: YOUR_ENV_NAME
+          region: ${{ secrets.AWS_REGION }}
+          version_label: v-${{ github.run_number }}
+          deployment_package: app.zip
