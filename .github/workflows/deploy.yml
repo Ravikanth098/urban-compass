@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Simple CI/CD
 
 on:
   push:
@@ -6,47 +6,41 @@ on:
       - main
 
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code
       - name: Checkout
         uses: actions/checkout@v3
 
-      # 2. Setup Node
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      # 3. Install root dependencies
-      - name: Install dependencies
-        run: npm install
+      - name: Install backend
+        run: |
+          cd backend
+          npm install
 
-      # 4. Build frontend
       - name: Build frontend
         run: |
           cd frontend
           npm install
           CI=false npm run build
 
-      # 5. Copy frontend build into backend
       - name: Copy build
         run: |
           rm -rf backend/frontend
           mkdir -p backend/frontend
           cp -r frontend/build/* backend/frontend/
 
-      # 6. Zip project (IMPORTANT FIX)
-      - name: Zip
+      # ✅ FINAL FIX
+      - name: Zip backend only
         run: |
-          zip -r app.zip . \
-          -x "node_modules/*" \
-          -x ".git/*" \
-          -x ".github/*"
+          cd backend
+          zip -r ../app.zip .
 
-      # 7. Deploy to AWS Elastic Beanstalk
       - name: Deploy
         uses: einaregilsson/beanstalk-deploy@v21
         with:
