@@ -26,7 +26,7 @@ function ManageItems({ title, endpoint }) {
 
   useEffect(() => {
     fetchItems();
-  }, []);
+  }, [fetchItems]);
 
   // ✅ ADD ITEM
   const addItem = async () => {

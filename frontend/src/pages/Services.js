@@ -4,7 +4,6 @@ import hospital from "../assets/images/hospital.avif";
 import tourist from "../assets/images/tourist.jpg";
 import mall from "../assets/images/shoppingmalls.jpg";
 import history from "../assets/images/ireland.avif";
-import car from "../assets/images/car.jpg";
 import hotel from "../assets/images/hotelicon.png";
 function Services() {
 

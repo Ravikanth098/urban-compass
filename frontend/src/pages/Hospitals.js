@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import "../styles/Hospitals.css";
-import hospitalImg from "../assets/images/dublin.jpg";
 import BackButton from "../components/BackButton";
 import img11 from "../assets/images/city.jpg";
 import img12 from "../assets/images/west.jpg";
