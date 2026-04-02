@@ -28,19 +28,21 @@ jobs:
         cd frontend
         CI=false npm run build
 
-    - name: Copy build
+    - name: Copy frontend build to backend
       run: |
-        mkdir -p backend/frontend
+        rm -rf backend/frontend
+        mkdir backend/frontend
         cp -r frontend/build/* backend/frontend/
 
-    - name: Install backend
+    - name: Prepare deployment folder
       run: |
-        cd backend
-        npm install --legacy-peer-deps
+        rm -rf deploy
+        mkdir deploy
+        cp -r backend/* deploy/
 
-    - name: Zip app
+    - name: Zip application
       run: |
-        cd backend
+        cd deploy
         zip -r ../app.zip .
 
     - name: Deploy to AWS
