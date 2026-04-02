@@ -4,14 +4,10 @@ const db = require("./config/db");
 const path = require("path");
 require("dotenv").config();
 
-// ROUTES
 const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
-// ======================
-// ✅ CORS
-// ======================
 app.use(
   cors({
     origin: "*",
@@ -19,26 +15,14 @@ app.use(
   })
 );
 
-// ======================
-// ✅ JSON
-// ======================
 app.use(express.json());
 
-// ======================
-// ✅ API ROUTES
-// ======================
-
-// AUTH
 app.use("/users", authRoutes);
 
-// TEST
 app.get("/users/test", (req, res) => {
   res.send("Users route working");
 });
 
-// ======================
-// ✅ GET CITIES
-// ======================
 app.get("/cities", (req, res) => {
   db.query("SELECT * FROM cities", (err, result) => {
     if (err) {
@@ -49,9 +33,6 @@ app.get("/cities", (req, res) => {
   });
 });
 
-// ======================
-// ✅ ADD CITY
-// ======================
 app.post("/cities", (req, res) => {
   const { name, image } = req.body;
 
@@ -71,9 +52,6 @@ app.post("/cities", (req, res) => {
   });
 });
 
-// ======================
-// ✅ DELETE CITY
-// ======================
 app.delete("/cities/:id", (req, res) => {
   const { id } = req.params;
 
@@ -87,9 +65,6 @@ app.delete("/cities/:id", (req, res) => {
   });
 });
 
-// ======================
-// ✅ ADMIN LOGIN
-// ======================
 app.post("/admin/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -106,26 +81,17 @@ app.post("/admin/login", (req, res) => {
   }
 });
 
-// ======================
-// ✅ SERVE REACT FRONTEND
-// ======================
-app.use(express.static(path.join(__dirname, "frontend/build")));
+app.use(express.static(path.join(__dirname, "frontend")));
 
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "frontend/build/index.html"));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/index.html"));
 });
 
-// ======================
-// ✅ ERROR HANDLER
-// ======================
 app.use((err, req, res, next) => {
   console.error("Server Error:", err.message);
   res.status(500).json({ error: err.message });
 });
 
-// ======================
-// ✅ SERVER START
-// ======================
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
